@@ -5,25 +5,33 @@ class profile::windows::sql (
   reboot { 'before install':
     when => pending,
   }
-  windowsfeature { 'Net-Framework-Core':
-    before => Sqlserver_instance['MyInstance'],
+  service { 'wuauserv':
+    ensure  => running,
+    enable  => true,
+    before  => Windowsfeature['Net-Framework-Core'],
   }
-  sqlserver_instance{ 'MyInstance':
+  windowsfeature { 'Net-Framework-Core':
+    before => Sqlserver::Database['mytest'],
+  }
+  sqlserver_instance{ 'MYINSTANCE':
     ensure                => present,
     features              => ['SQL'],
     source                => $source,
+    security_mode	  => 'SQL',
+    sa_pwd                => 'MySecretPassword',
     sql_sysadmin_accounts => [$admin_user],
   }
   sqlserver_features { 'Tools':
     source   => $source,
     features => ['Tools'],
   }
-  sqlserver::config{ 'MyInstance':
+  sqlserver::config{ 'MYINSTANCE':
     admin_user => 'sa',
     admin_pass => 'MySecretPassword',
   }
-  sqlserver::database{ 'MyDB':
+  sqlserver::database{ 'mytest':
     ensure   => present,
-    instance => 'MyInstance',
+    db_name  => 'mytest',
+    instance => 'MYINSTANCE',
   }
 }
