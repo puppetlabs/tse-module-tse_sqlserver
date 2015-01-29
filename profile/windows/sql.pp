@@ -2,9 +2,9 @@ class profile::windows::sql (
   $source     = 'C:/vagrant/sqlserver',
   $admin_user = 'vagrant',
 ) {
-  reboot { 'before install':
-    when => pending,
-  }
+#  reboot { 'before install':
+#    when => pending,
+#  }
   service { 'wuauserv':
     ensure  => running,
     enable  => true,

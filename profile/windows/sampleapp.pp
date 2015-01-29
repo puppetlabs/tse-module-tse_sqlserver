@@ -6,6 +6,15 @@ class profile::windows::sampleapp (
     creates => "${sqldatadir}/AdventureWorks2012_Data.mdf",
     source  => "http://master.inf.puppetlabs.demo/AdventureWorks2012_Data.zip",
     require => Class['profile::windows::sql'],
+    notify  => Exec['SetupDB'],
+  }
+  file { 'C:/AttachDatabase.ps1':
+    ensure  => present,
+    content => template('profile/AttachDatabase.ps1'),
+  }
+  file { 'C:/AttachDatabasesConfig.xml':
+    ensure  => present,
+    content => template('profile/AttachDatabasesConfig.xml.erb'),
   }
   file { 'C:/inetpub/wwwroot/CloudShop':
     ensure  => directory,
@@ -18,6 +27,12 @@ class profile::windows::sampleapp (
     require => File['C:/inetpub/wwwroot/CloudShop'],
     notify  => Exec['ConvertAPP'],
   }
+  exec { 'SetupDB':
+    command     => template('profile/AttachDatabase.ps1'),
+    provider    => powershell,
+    refreshonly => true,
+    logoutput   => true,
+  }
   exec { 'ConvertAPP':
     command     => 'ConvertTo-WebApplication "IIS:\Sites\Default Web Site\CloudShop"',
     provider    => powershell,
@@ -26,6 +41,7 @@ class profile::windows::sampleapp (
   file { 'C:/inetpub/wwwroot/CloudShop/Web.config':
     ensure  => present,
     content => template('profile/Web.config.erb'),
+    require => Staging::Deploy['CloudShop.zip'],
   }
   sqlserver::login{'CloudShop':
      instance => 'MYINSTANCE',
