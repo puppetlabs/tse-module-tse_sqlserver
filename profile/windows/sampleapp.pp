@@ -8,10 +8,6 @@ class profile::windows::sampleapp (
     require => Class['profile::windows::sql'],
     notify  => Exec['SetupDB'],
   }
-  file { 'C:/AttachDatabase.ps1':
-    ensure  => present,
-    content => template('profile/AttachDatabase.ps1'),
-  }
   file { 'C:/AttachDatabasesConfig.xml':
     ensure  => present,
     content => template('profile/AttachDatabasesConfig.xml.erb'),
