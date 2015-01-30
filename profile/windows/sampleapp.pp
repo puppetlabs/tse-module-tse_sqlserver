@@ -1,6 +1,11 @@
 class profile::windows::sampleapp (
   $sqldatadir = 'C:/Program Files/Microsoft SQL Server/MSSQL12.MYINSTANCE/MSSQL/DATA/',
+  $docroot    = 'C:/inetpub/wwwroot',
 ) {
+  file { "${docroot}/CloudShop":
+    ensure  => directory,
+    require => Class['profile::windows::iisdb'],
+  }
   staging::deploy { "AdventureWorks2012_Data.zip":
     target  => $sqldatadir,
     creates => "${sqldatadir}/AdventureWorks2012_Data.mdf",
@@ -8,24 +13,21 @@ class profile::windows::sampleapp (
     require => Class['profile::windows::sql'],
     notify  => Exec['SetupDB'],
   }
-  file { 'C:/AttachDatabase.ps1':
+  staging::deploy { "CloudShop.zip":
+    target  => "${docroot}/CloudShop",
+    creates => "${docroot}/CloudShop/packages.config",
+    source  => "http://master.inf.puppetlabs.demo/CloudShop.zip",
+    require => File["${docroot}/CloudShop"],
+    notify  => Exec['ConvertAPP'],
+  }
+  file { "${docroot}/CloudShop/Web.config":
     ensure  => present,
-    content => template('profile/AttachDatabase.ps1'),
+    content => template('profile/Web.config.erb'),
+    require => Staging::Deploy['CloudShop.zip'],
   }
   file { 'C:/AttachDatabasesConfig.xml':
     ensure  => present,
     content => template('profile/AttachDatabasesConfig.xml.erb'),
-  }
-  file { 'C:/inetpub/wwwroot/CloudShop':
-    ensure  => directory,
-    require => Class['profile::windows::iisdb'],
-  }
-  staging::deploy { "CloudShop.zip":
-    target  => 'C:/inetpub/wwwroot/CloudShop',
-    creates => 'C:/inetpub/wwwroot/CloudShop/packages.config',
-    source  => "http://master.inf.puppetlabs.demo/CloudShop.zip",
-    require => File['C:/inetpub/wwwroot/CloudShop'],
-    notify  => Exec['ConvertAPP'],
   }
   exec { 'SetupDB':
     command     => template('profile/AttachDatabase.ps1'),
@@ -37,11 +39,6 @@ class profile::windows::sampleapp (
     command     => 'ConvertTo-WebApplication "IIS:\Sites\Default Web Site\CloudShop"',
     provider    => powershell,
     refreshonly => true,
-  }
-  file { 'C:/inetpub/wwwroot/CloudShop/Web.config':
-    ensure  => present,
-    content => template('profile/Web.config.erb'),
-    require => Staging::Deploy['CloudShop.zip'],
   }
   sqlserver::login{'CloudShop':
      instance => 'MYINSTANCE',

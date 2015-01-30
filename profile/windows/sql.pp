@@ -2,9 +2,9 @@ class profile::windows::sql (
   $source     = 'C:/vagrant/sqlserver',
   $admin_user = 'vagrant',
 ) {
-#  reboot { 'before install':
-#    when => pending,
-#  }
+  reboot { 'before install':
+      when => pending,
+  }
   service { 'wuauserv':
     ensure  => running,
     enable  => true,
@@ -21,9 +21,9 @@ class profile::windows::sql (
     sa_pwd                => 'MySecretPassword',
     sql_sysadmin_accounts => [$admin_user],
   }
-  sqlserver_features { 'Tools':
+  sqlserver_features { 'Management_Studio':
     source   => $source,
-    features => ['Tools'],
+    features => ['SSMS'],
   }
   sqlserver::config{ 'MYINSTANCE':
     admin_user => 'sa',
