@@ -7,3 +7,4 @@ Requires the following modules:
 * mount_iso
 * sqlserver
 * ACL
+* WindowsFeature
