@@ -1,6 +1,7 @@
 class profile::windows::sampleapp (
-  $sqldatadir = 'C:/Program Files/Microsoft SQL Server/MSSQL12.MYINSTANCE/MSSQL/DATA/',
-  $docroot    = 'C:/inetpub/wwwroot',
+  $sqldatadir  = 'C:/Program Files/Microsoft SQL Server/MSSQL12.MYINSTANCE/MSSQL/DATA/',
+  $docroot     = 'C:/inetpub/wwwroot',
+  $db_instance = 'MYINSTANCE',
 ) {
   file { "${docroot}/CloudShop":
     ensure  => directory,
@@ -41,7 +42,7 @@ class profile::windows::sampleapp (
     refreshonly => true,
   }
   sqlserver::login{'CloudShop':
-     instance => 'MYINSTANCE',
+     instance => $db_instance,
      password => 'Azure$123',
   }  
 }
