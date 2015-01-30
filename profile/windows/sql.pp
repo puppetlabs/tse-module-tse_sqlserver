@@ -1,6 +1,7 @@
 class profile::windows::sql (
-  $source     = 'C:/vagrant/sqlserver',
-  $admin_user = 'vagrant',
+  $source      = 'C:/vagrant/sqlserver',
+  $admin_user  = 'vagrant',
+  $db_instance = 'MYINSTANCE',
 ) {
   reboot { 'before install':
       when => pending,
@@ -13,7 +14,7 @@ class profile::windows::sql (
   windowsfeature { 'Net-Framework-Core':
     before => Sqlserver::Database['mytest'],
   }
-  sqlserver_instance{ 'MYINSTANCE':
+  sqlserver_instance{ $db_instance:
     ensure                => present,
     features              => ['SQL'],
     source                => $source,
@@ -25,13 +26,13 @@ class profile::windows::sql (
     source   => $source,
     features => ['SSMS'],
   }
-  sqlserver::config{ 'MYINSTANCE':
+  sqlserver::config{ $db_instance:
     admin_user => 'sa',
     admin_pass => 'MySecretPassword',
   }
   sqlserver::database{ 'mytest':
     ensure   => present,
     db_name  => 'mytest',
-    instance => 'MYINSTANCE',
+    instance => $db_instance,
   }
 }
