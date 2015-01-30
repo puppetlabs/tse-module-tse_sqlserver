@@ -23,13 +23,13 @@ GO
 CREATE DATABASE [$DBName] ON (FILENAME = '$mdfFilename.mdf'),(FILENAME = '$ldfFilename.ldf') for ATTACH
 GO
 "@ 
-    Invoke-Sqlcmd $attachSQLCMD -QueryTimeout 3600 -ServerInstance '<%= @hostname %>\MYINSTANCE'
+    Invoke-Sqlcmd $attachSQLCMD -QueryTimeout 3600 -ServerInstance '<%= @hostname %>\<%= scope.lookupvar('::profile::sampleapp::db_instance') %>'
 $changeowner = @"
 USE AdventureWorks2012
 GO
 ALTER AUTHORIZATION ON DATABASE::AdventureWorks2012 TO CloudShop;
 GO
 "@
-    Invoke-Sqlcmd $changeowner -QueryTimeout 3600 -ServerInstance '<%= @hostname %>\MYINSTANCE'
+    Invoke-Sqlcmd $changeowner -QueryTimeout 3600 -ServerInstance '<%= @hostname %>\<%= scope.lookupvar('::profile::sampleapp::db_instance') %>'
 }
 

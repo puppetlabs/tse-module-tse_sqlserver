@@ -2,6 +2,7 @@ class profile::windows::sampleapp (
   $sqldatadir  = 'C:/Program Files/Microsoft SQL Server/MSSQL12.MYINSTANCE/MSSQL/DATA/',
   $docroot     = 'C:/inetpub/wwwroot',
   $db_instance = 'MYINSTANCE',
+  $iis_site    = 'Default Web Site',
 ) {
   file { "${docroot}/CloudShop":
     ensure  => directory,
@@ -37,7 +38,7 @@ class profile::windows::sampleapp (
     logoutput   => true,
   }
   exec { 'ConvertAPP':
-    command     => 'ConvertTo-WebApplication "IIS:\Sites\Default Web Site\CloudShop"',
+    command     => "ConvertTo-WebApplication \"IIS:\Sites\${iis_site}\CloudShop\"",
     provider    => powershell,
     refreshonly => true,
   }
