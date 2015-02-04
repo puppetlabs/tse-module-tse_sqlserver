@@ -1,5 +1,5 @@
 # tse_sqlserver
-Puppet role and profiles for installing and configuring m$ sql server
+Puppet role and profiles for installing and configuring MS SQL server
 
 Requires the following modules:
 
