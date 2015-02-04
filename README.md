@@ -1,4 +1,4 @@
-# sqlserver
+# tse_sqlserver
 Puppet role and profiles for installing and configuring m$ sql server
 
 Requires the following modules:
