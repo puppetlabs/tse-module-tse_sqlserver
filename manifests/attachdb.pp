@@ -1,3 +1,5 @@
+# This defined type is to attach a zip file containing
+# mdf & ldf files into a new database within MS SQL Server 2012.
 define tse_sqlserver::attachdb (
   $mdf_file      = 'AdventureWorks2012_Data',
   $ldf_file      = 'AdventureWorks2012_log',
@@ -25,9 +27,9 @@ define tse_sqlserver::attachdb (
     logoutput   => true,
   }
   sqlserver::login{ $owner:
-     instance => $db_instance,
-     password => $db_password,
-     notify   => Exec["Attach ${mdf_file}_${title}"],
-     require  => File["C:/AttachDatabaseConfig_${title}.xml"],
-  } 
+    instance => $db_instance,
+    password => $db_password,
+    notify   => Exec["Attach ${mdf_file}_${title}"],
+    require  => File["C:/AttachDatabaseConfig_${title}.xml"],
+  }
 }
