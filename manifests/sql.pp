@@ -3,6 +3,7 @@ class tse_sqlserver::sql (
   $admin_user  = 'vagrant',
   $db_instance = 'MYINSTANCE',
   $sa_pass     = 'MySecretPassword',
+  $db_name     = 'sampledb',
 ) {
   reboot { 'before install':
       when => pending,
@@ -13,13 +14,13 @@ class tse_sqlserver::sql (
     before  => Windowsfeature['Net-Framework-Core'],
   }
   windowsfeature { 'Net-Framework-Core':
-    before => Sqlserver::Database['mytest'],
+    before => Sqlserver::Database[$db_name],
   }
   sqlserver_instance{ $db_instance:
     ensure                => present,
     features              => ['SQL'],
     source                => $source,
-    security_mode	        => 'SQL',
+    security_mode	  => 'SQL',
     sa_pwd                => $sa_pass,
     sql_sysadmin_accounts => [$admin_user],
   }
@@ -31,9 +32,9 @@ class tse_sqlserver::sql (
     admin_user => 'sa',
     admin_pass => $sa_pass,
   }
-  sqlserver::database{ 'sampledb':
+  sqlserver::database{ $db_name:
     ensure   => present,
-    db_name  => 'sampledb',
+    db_name  => $db_name,
     instance => $db_instance,
   }
 }
