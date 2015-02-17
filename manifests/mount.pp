@@ -1,3 +1,4 @@
+# This class is used to mount an ISO containing the SQL Server 2014 Code.
 class tse_sqlserver::mount {
 
   include tse_sqlserver::staging
@@ -8,12 +9,21 @@ class tse_sqlserver::mount {
 
   acl { 'c:/staging/tse_sqlserver/SQLServer2014-x64-ENU.iso':
     permissions  => [
-      { identity => 'Everyone', rights       => [ 'full' ] },
-      { identity => 'Administrators', rights => [ 'full' ] },
-      { identity => 'vagrant', rights        => [ 'full' ] },
+      {
+        identity => 'Everyone',
+        rights   => [ 'full' ]
+      },
+      {
+        identity => 'Administrators',
+        rights   => [ 'full' ]
+      },
+      {
+        identity => 'vagrant',
+        rights   => [ 'full' ]
+      },
     ],
-    require => Staging::File['SQLServer2014-x64-ENU.iso'],
-    before  => Mount_iso['c:/staging/tse_sqlserver/SQLServer2014-x64-ENU.iso'],
+    require      => Staging::File['SQLServer2014-x64-ENU.iso'],
+    before       => Mount_iso['c:/staging/tse_sqlserver/SQLServer2014-x64-ENU.iso'],
   }
 
   mount_iso { 'c:/staging/tse_sqlserver/SQLServer2014-x64-ENU.iso':

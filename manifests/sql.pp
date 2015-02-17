@@ -1,8 +1,11 @@
+# Class to install SQL Server, set its configuration, create an
+# instance, as well as a sample DB.
 class tse_sqlserver::sql (
   $source      = 'C:/vagrant/sqlserver',
   $admin_user  = 'vagrant',
   $db_instance = 'MYINSTANCE',
   $sa_pass     = 'MySecretPassword',
+  $db_name     = 'sampledb',
 ) {
   reboot { 'before install':
       when => pending,
@@ -19,7 +22,7 @@ class tse_sqlserver::sql (
     ensure                => present,
     features              => ['SQL'],
     source                => $source,
-    security_mode	        => 'SQL',
+    security_mode         => 'SQL',
     sa_pwd                => $sa_pass,
     sql_sysadmin_accounts => [$admin_user],
   }
@@ -31,9 +34,9 @@ class tse_sqlserver::sql (
     admin_user => 'sa',
     admin_pass => $sa_pass,
   }
-  sqlserver::database{ 'sampledb':
+  sqlserver::database{ $db_name:
     ensure   => present,
-    db_name  => 'sampledb',
+    db_name  => $db_name,
     instance => $db_instance,
   }
 }

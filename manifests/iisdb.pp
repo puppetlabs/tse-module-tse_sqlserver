@@ -1,6 +1,8 @@
+# This class is used to setup IIS with ASP.Net support for Windows
+# Server 2012. This will be useful for apps connecting to a database.
 class tse_sqlserver::iisdb {
   windowsfeature { 'IIS_APPSERVER':
-    feature_name => [ 
+    feature_name => [
       'Web-Server',
       'Net-Framework-45-ASPNET',
       'Application-Server',
@@ -37,5 +39,5 @@ class tse_sqlserver::iisdb {
       'Web-Url-Auth',
       'Web-Windows-Auth',
     ]
-  } 
+  }
 }
