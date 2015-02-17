@@ -25,6 +25,5 @@ define tse_sqlserver::attachdb (
     instance => $db_instance,
     password => $db_password,
     notify   => Exec["Attach ${mdf_file}_${title}"],
-    require  => File["C:/AttachDatabaseConfig_${title}.xml"],
-  }
+    require  => Staging::Deploy["${title}_${zip_file}"],
 }
