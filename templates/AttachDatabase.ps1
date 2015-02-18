@@ -8,7 +8,7 @@ If (!$?) {"Error loading Microsoft SQL Server PowerShell module. Please check if
 $attachSQLCMD = @"
 USE [master]
 GO
-CREATE DATABASE [<%= @title %>] ON (FILENAME = '<%= @mdf_file %>'),(FILENAME = '<%= @ldf_file %>') for ATTACH
+CREATE DATABASE [<%= @title %>] ON (FILENAME = '<%= @path %>\<%= @mdf_file %>'),(FILENAME = '<%= @path %>\<%= @ldf_file %>') for ATTACH
 GO
 "@ 
     Invoke-Sqlcmd $attachSQLCMD -QueryTimeout 3600 -ServerInstance '<%= @hostname %>\<%= @db_instance %>'

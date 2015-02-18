@@ -12,7 +12,7 @@ define tse_sqlserver::attachdb (
 ) {
   staging::deploy { "${title}_${zip_file}":
     target  => $path,
-    creates => "${path}/${mdf_file}.mdf",
+    creates => "${path}/${mdf_file}",
     source  => "${file_source}/${zip_file}",
   }
   exec { "Attach ${mdf_file}_${title}":
@@ -26,4 +26,5 @@ define tse_sqlserver::attachdb (
     password => $db_password,
     notify   => Exec["Attach ${mdf_file}_${title}"],
     require  => Staging::Deploy["${title}_${zip_file}"],
+  }
 }
