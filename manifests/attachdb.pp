@@ -12,8 +12,13 @@ define tse_sqlserver::attachdb (
 ) {
   staging::deploy { "${title}_${zip_file}":
     target  => $path,
-    creates => "${path}/${mdf_file}",
+    creates => "${path}/${mdf_file}.mdf",
     source  => "${file_source}/${zip_file}",
+  }
+  file { "C:/AttachDatabaseConfig_${title}.xml":
+    ensure  => present,
+    content => template("${module_name}/AttachDatabaseConfig.xml.erb"),
+    require => Staging::Deploy["${title}_${zip_file}"],
   }
   exec { "Attach ${mdf_file}_${title}":
     command     => template("${module_name}/AttachDatabase.ps1"),
@@ -25,6 +30,6 @@ define tse_sqlserver::attachdb (
     instance => $db_instance,
     password => $db_password,
     notify   => Exec["Attach ${mdf_file}_${title}"],
-    require  => Staging::Deploy["${title}_${zip_file}"],
+    require  => File["C:/AttachDatabaseConfig_${title}.xml"],
   }
 }
