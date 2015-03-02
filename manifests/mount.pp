@@ -1,8 +1,8 @@
 # This class is used to mount an ISO containing the SQL Server 2014 Code.
 class tse_sqlserver::mount {
-
-  include tse_sqlserver::staging
-
+  
+  include profile::staging
+  
   staging::file { 'SQLServer2014-x64-ENU.iso':
     source => 'puppet:///modules/tse_sqlserver/SQLServer2014-x64-ENU.iso',
   }

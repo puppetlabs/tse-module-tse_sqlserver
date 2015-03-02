@@ -16,7 +16,7 @@ class tse_sqlserver::sql (
     before  => Windowsfeature['Net-Framework-Core'],
   }
   windowsfeature { 'Net-Framework-Core':
-    before => Sqlserver::Database[$db_name],
+    before => Sqlserver::Database['sampledb'],
   }
   sqlserver_instance{ $db_instance:
     ensure                => present,
