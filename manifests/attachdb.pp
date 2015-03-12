@@ -4,7 +4,7 @@ define tse_sqlserver::attachdb (
   $mdf_file      = 'AdventureWorks2012_Data.mdf',
   $ldf_file      = 'AdventureWorks2012_log.ldf',
   $zip_file      = 'AdventureWorks2012_Data.zip',
-  $path          = 'C:\Program Files\Microsoft SQL Server\MSSQL11.MYINSTANCE\MSSQL\DATA',
+  $path          = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA',
   $file_source   = 'puppet:///modules/tse_sqlserver/',
   $db_instance   = 'MYINSTANCE',
   $owner         = 'CloudShop',
