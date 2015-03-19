@@ -5,7 +5,7 @@ define tse_sqlserver::attachdb (
   $ldf_file      = 'AdventureWorks2012_log',
   $zip_file      = 'AdventureWorks2012_Data.zip',
   $path          = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA',
-  $file_source   = 'http://master.inf.puppetlabs.demo',
+  $file_source   = 'puppet:///modules/tse_sqlserver/',
   $db_instance   = 'MYINSTANCE',
   $owner         = 'CloudShop',
   $db_password   = 'Azure$123',
