@@ -1,22 +1,24 @@
 # Class to install SQL Server, set its configuration, create an
 # instance, as well as a sample DB.
 class tse_sqlserver::sql (
-  $source      = 'C:/vagrant/sqlserver',
-  $admin_user  = 'vagrant',
-  $db_instance = 'MYINSTANCE',
-  $sa_pass     = 'MySecretPassword',
-  $db_name     = 'sampledb',
+  $source,
+  $admin_user,
+  $db_instance,
+  $sa_pass,
+  $db_name
 ) {
   reboot { 'before install':
       when => pending,
   }
+
   service { 'wuauserv':
-    ensure  => running,
-    enable  => true,
-    before  => Windowsfeature['Net-Framework-Core'],
+    ensure => running,
+    enable => true,
+    before => Windowsfeature['Net-Framework-Core'],
   }
+
   windowsfeature { 'Net-Framework-Core':
-    before => Sqlserver::Database['sampledb'],
+    before => Sqlserver::Database[$db_name],
   }
   sqlserver_instance{ $db_instance:
     ensure                => present,

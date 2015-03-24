@@ -1,33 +1,34 @@
 # This class is used to mount an ISO containing the SQL Server 2014 Code.
-class tse_sqlserver::mount {
-  
-  include profile::staging
-  
-  staging::file { 'SQLServer2014-x64-ENU.iso':
-    source => 'puppet:///modules/tse_sqlserver/SQLServer2014-x64-ENU.iso',
+class tse_sqlserver::mount (
+  $iso,
+  $iso_drive
+) {
+
+  include tse_sqlserver::staging
+
+  staging::file { $iso:
+    source => "puppet:///modules/${module_name}/${iso}",
   }
 
-  acl { 'c:/staging/tse_sqlserver/SQLServer2014-x64-ENU.iso':
-    permissions  => [
+  $iso_path = "${::staging::path}/${module_name}/${iso}"
+
+  acl { $iso_path :
+    permissions => [
       {
         identity => 'Everyone',
         rights   => [ 'full' ]
       },
       {
-        identity => 'Administrators',
-        rights   => [ 'full' ]
-      },
-      {
-        identity => 'vagrant',
+        identity => $::staging::owner,
         rights   => [ 'full' ]
       },
     ],
-    require      => Staging::File['SQLServer2014-x64-ENU.iso'],
-    before       => Mount_iso['c:/staging/tse_sqlserver/SQLServer2014-x64-ENU.iso'],
+    require     => Staging::File[$iso],
+    before      => Mount_iso[$iso_path],
   }
 
-  mount_iso { 'c:/staging/tse_sqlserver/SQLServer2014-x64-ENU.iso':
-    drive_letter => 'F',
+  mount_iso { $iso_path :
+    drive_letter => $iso_drive,
   }
 
 }
