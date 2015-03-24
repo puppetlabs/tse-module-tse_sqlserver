@@ -10,15 +10,19 @@ define tse_sqlserver::attachdb (
   $owner         = 'CloudShop',
   $db_password   = 'Azure$123',
 ) {
-  staging::deploy { "${title}_${zip_file}":
-    target  => $path,
+  file { "${path}/${zip_file}":
+    ensure => present,
+    source => "${file_source}/${zip_file}",
+  }
+  unzip { "SQL Data ${zip_file}":
+    source  => "${path}/${zip_file}",
     creates => "${path}/${mdf_file}.mdf",
-    source  => "${file_source}/${zip_file}",
+    require => File["${path}/${zip_file}"],
   }
   file { "C:/AttachDatabaseConfig_${title}.xml":
     ensure  => present,
     content => template("${module_name}/AttachDatabaseConfig.xml.erb"),
-    require => Staging::Deploy["${title}_${zip_file}"],
+    require => Unzip["SQL Data ${zip_file}"],
   }
   exec { "Attach ${mdf_file}_${title}":
     command     => template("${module_name}/AttachDatabase.ps1"),
