@@ -9,6 +9,5 @@ class tse_sqlserver (
   }
 
   contain tse_sqlserver::sql
-  contain tse_sqlserver::iisdb
   tse_sqlserver::attachdb { 'AdventureWorks2012': }
 }
