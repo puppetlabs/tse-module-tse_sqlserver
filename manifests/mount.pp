@@ -3,7 +3,6 @@ class tse_sqlserver::mount (
   $iso,
   $iso_drive
 ) {
-
   include tse_sqlserver::staging
 
   staging::file { $iso:
@@ -29,6 +28,7 @@ class tse_sqlserver::mount (
 
   mount_iso { $iso_path :
     drive_letter => $iso_drive,
+    before       => Class['tse_sqlserver::sql'],
   }
 
 }
