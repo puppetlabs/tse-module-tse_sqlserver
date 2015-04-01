@@ -15,7 +15,7 @@ Start-Sleep -s 10
     # Attach SQL Server database
     #
     Add-PSSnapin SqlServerCmdletSnapin* -ErrorAction SilentlyContinue
-        If (!$?) {Import-Module "C:\Program Files (x86)\Microsoft SQL Server\120\Tools\PowerShell\Modules\SQLPS" -WarningAction SilentlyContinue}
+        If (!$?) {Import-Module "<%= @sqlps_path %>" -WarningAction SilentlyContinue}
 If (!$?) {"Error loading Microsoft SQL Server PowerShell module. Please check if it is installed."; Exit}
 $attachSQLCMD = @"
 USE [master]
