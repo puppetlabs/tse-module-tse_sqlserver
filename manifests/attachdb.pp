@@ -4,21 +4,29 @@ define tse_sqlserver::attachdb (
   $mdf_file      = 'AdventureWorks2012_Data',
   $ldf_file      = 'AdventureWorks2012_log',
   $zip_file      = 'AdventureWorks2012_Data.zip',
-  $file_source   = 'puppet:///modules/tse_sqlserver/',
+  $file_source   = 'puppet:///modules/tse_sqlserver',
   $db_instance   = 'MYINSTANCE',
   $owner         = 'CloudShop',
   $db_password   = 'Azure$123',
-  $path          = $::tse_sqlserver::params::path,
-  $sqlps_path    = $::tse_sqlserver::params::sqlps_path,
 ) {
-  file { "${path}/${zip_file}":
+  case $::tse_sqlserver::sqlserver_version {
+    '2012':  {  
+               $data_path  = 'C:\Program Files\Microsoft SQL Server\MSSQL11.MYINSTANCE\MSSQL\DATA'
+               $sqlps_path = 'C:\Program Files (x86)\Microsoft SQL Server\110\Tools\PowerShell\Modules\SQLPS' 
+             }
+    '2014':  { 
+               $data_path  = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA'
+               $sqlps_path = 'C:\Program Files (x86)\Microsoft SQL Server\120\Tools\PowerShell\Modules\SQLPS' 
+             }
+  }
+  file { "${data_path}/${zip_file}":
     ensure => present,
     source => "${file_source}/${zip_file}",
   }
   unzip { "SQL Data ${zip_file}":
-    source  => "${path}/${zip_file}",
-    creates => "${path}/${mdf_file}.mdf",
-    require => File["${path}/${zip_file}"],
+    source  => "${data_path}/${zip_file}",
+    creates => "${data_path}/${mdf_file}.mdf",
+    require => File["${data_path}/${zip_file}"],
   }
   file { "C:/AttachDatabaseConfig_${title}.xml":
     ensure  => present,
