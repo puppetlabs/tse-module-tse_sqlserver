@@ -1,5 +1,6 @@
 ---
 tse_sqlserver::mount_iso:         true
+tse_sqlserver::sqlserver_version: "2014"
 tse_sqlserver::mount::iso:        "SQLServer2014-x64-ENU.iso"
 tse_sqlserver::mount::iso_drive:  "F"
 tse_sqlserver::sql::source:       "F:/"
@@ -7,4 +8,3 @@ tse_sqlserver::sql::admin_user:   "vagrant"
 tse_sqlserver::sql::db_instance:  "MYINSTANCE"
 tse_sqlserver::sql::sa_pass:      "MySecretPassword"
 tse_sqlserver::sql::db_name:      "sampledb"
-tse_sqlserver::sqlserver_version: "2014"
