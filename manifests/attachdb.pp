@@ -1,8 +1,8 @@
 # This defined type is to attach a zip file containing
 # mdf & ldf files into a new database within MS SQL Server 2012.
 define tse_sqlserver::attachdb (
-  $mdf_file      = 'AdventureWorks2012_Data',
-  $ldf_file      = 'AdventureWorks2012_log',
+  $mdf_file      = 'AdventureWorks2012_Data.mdf',
+  $ldf_file      = 'AdventureWorks2012_log.ldf',
   $zip_file      = 'AdventureWorks2012_Data.zip',
   $file_source   = 'puppet:///modules/tse_sqlserver',
   $db_instance   = 'MYINSTANCE',
@@ -24,25 +24,26 @@ define tse_sqlserver::attachdb (
     source => "${file_source}/${zip_file}",
   }
   unzip { "SQL Data ${zip_file}":
-    source  => "${data_path}/${zip_file}",
-    creates => "${data_path}/${mdf_file}.mdf",
-    require => File["${data_path}/${zip_file}"],
+    source    => "${data_path}/${zip_file}",
+    creates   => "${data_path}/${mdf_file}",
+    subscribe => File["${data_path}/${zip_file}"],
   }
-  file { "C:/AttachDatabaseConfig_${title}.xml":
-    ensure  => present,
-    content => template("${module_name}/AttachDatabaseConfig.xml.erb"),
-    require => Unzip["SQL Data ${zip_file}"],
-  }
-  exec { "Attach ${mdf_file}_${title}":
-    command     => template("${module_name}/AttachDatabase.ps1"),
+  exec { "Attach ${title}":
+    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${db_instance}\'",
     provider    => powershell,
-    refreshonly => true,
-    logoutput   => true,
+    path        => $sqlps_path,
+    unless      => "import-module \'${sqlps_path}\'; get-sqldatabase -Path SQLSERVER:\\SQL\\${::hostname}\\${db_instance} -Name \"${title}\"",
+  }
+  exec { "Change owner of ${title}":
+    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [${title}] ALTER AUTHORIZATION ON DATABASE::${title} TO ${owner};\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${db_instance}\'",
+    provider    => powershell,
+    onlyif      => "import-module \'${sqlps_path}\'; get-sqldatabase -Path SQLSERVER:\\SQL\\${::hostname}\\${db_instance} -Name \"${title}\" | where-object owner -eq ${owner} | write-error",
+    subscribe   => Exec["Attach ${title}"],
   }
   sqlserver::login{ $owner:
     instance => $db_instance,
     password => $db_password,
-    notify   => Exec["Attach ${mdf_file}_${title}"],
-    require  => File["C:/AttachDatabaseConfig_${title}.xml"],
+    notify   => Exec["Attach ${title}"],
+    require  => Unzip["SQL Data ${zip_file}"],
   }
 }
