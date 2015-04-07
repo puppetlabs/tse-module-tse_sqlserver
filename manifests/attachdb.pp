@@ -32,12 +32,12 @@ define tse_sqlserver::attachdb (
     command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${db_instance}\'",
     provider    => powershell,
     path        => $sqlps_path,
-    unless      => "import-module \'${sqlps_path}\'; get-sqldatabase -Path SQLSERVER:\\SQL\\${::hostname}\\${db_instance} -Name \"${title}\"",
+    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select [name] from sys.databases where [name] = \'AdventureWorks2012\';\" -ServerInstance \"${::hostname}\\${db_instance}\"| write-error", 
   }
   exec { "Change owner of ${title}":
     command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [${title}] ALTER AUTHORIZATION ON DATABASE::${title} TO ${owner};\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${db_instance}\'",
     provider    => powershell,
-    onlyif      => "import-module \'${sqlps_path}\'; get-sqldatabase -Path SQLSERVER:\\SQL\\${::hostname}\\${db_instance} -Name \"${title}\" | where-object owner -eq ${owner} | write-error",
+    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select suser_sname(owner_sid) from sys.databases where [name] = \'${title}\';\" -ServerInstance \"$::hostname\\${db_instance}\" | where-object \"Column1\" -eq \"${owner}\" | write-error",
     subscribe   => Exec["Attach ${title}"],
   }
   sqlserver::login{ $owner:
