@@ -1,11 +1,11 @@
 # Class to install SQL Server, set its configuration, create an
 # instance, as well as a sample DB.
 class tse_sqlserver::sql (
-  $source,
-  $admin_user,
-  $db_instance,
-  $sa_pass,
-  $db_name
+  $source = 'F:/',
+  $admin_user = 'Administrator',
+  $db_instance = 'MYINSTANCE',
+  $sa_pass = 'Password$123$',
+  $db_name = 'sampledb'
 ) {
   reboot { 'before install':
       when => pending,
