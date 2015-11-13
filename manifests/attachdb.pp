@@ -20,13 +20,12 @@ define tse_sqlserver::attachdb (
     }
   }
   staging::file { $zip_file:
-    target => "${data_path}/${zip_file}",
     source => "${file_source}/${zip_file}",
   }
   unzip { "SQL Data ${zip_file}":
-    source    => "${data_path}/${zip_file}",
+    source    => "${::staging::path}/${module_name}/${zip_file}",
     creates   => "${data_path}/${mdf_file}",
-    subscribe => File["${data_path}/${zip_file}"],
+    subscribe => Staging::File[$zip_file],
   }
   exec { "Attach ${title}":
     command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${db_instance}\'",
