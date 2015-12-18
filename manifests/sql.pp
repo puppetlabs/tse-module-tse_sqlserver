@@ -5,7 +5,6 @@ class tse_sqlserver::sql (
   $admin_user = 'Administrator',
   $db_instance = 'MYINSTANCE',
   $sa_pass = 'Password$123$',
-  $db_name = 'sampledb'
 ) {
   reboot { 'before install':
       when => pending,
@@ -35,10 +34,5 @@ class tse_sqlserver::sql (
   sqlserver::config{ $db_instance:
     admin_user => 'sa',
     admin_pass => $sa_pass,
-  }
-  sqlserver::database{ $db_name:
-    ensure   => present,
-    db_name  => $db_name,
-    instance => $db_instance,
   }
 }
