@@ -7,6 +7,7 @@ class tse_sqlserver (
 
   if $mount_iso {
     contain tse_sqlserver::mount
+    Class['tse_sqlserver::mount'] -> Class['tse_sqlserver::sql']
   }
 
   contain tse_sqlserver::sql

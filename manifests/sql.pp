@@ -2,7 +2,7 @@
 # instance, as well as a sample DB.
 class tse_sqlserver::sql (
   $source = 'F:/',
-  $admin_user = 'Administrator',
+  $admin_user = 'vagrant',
   $db_instance = 'MYINSTANCE',
   $sa_pass = 'Password$123$',
 ) {

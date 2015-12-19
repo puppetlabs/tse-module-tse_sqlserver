@@ -29,7 +29,6 @@ class tse_sqlserver::mount (
 
   mount_iso { $iso_path :
     drive_letter => $iso_drive,
-    before       => Class['tse_sqlserver::sql'],
   }
 
 }
