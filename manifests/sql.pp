@@ -32,7 +32,7 @@ class tse_sqlserver::sql (
     direction    => 'in',
     action       => 'Allow',
     enabled      => 'yes',
-    program      => 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\Binn\sqlserver.exe'
+    program      => 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\Binn\sqlserver.exe',
     display_name => 'MSSQL',
     description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
   }
