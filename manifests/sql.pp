@@ -5,7 +5,7 @@ class tse_sqlserver::sql (
   $admin_user  = 'vagrant',
   $db_instance = 'MYINSTANCE',
   $sa_pass     = 'Password$123$',
-  $dbport      = '1433',
+  $dbport      = '49400',
 ) {
 
   reboot { 'before install':
@@ -39,7 +39,7 @@ class tse_sqlserver::sql (
     action       => 'Allow',
     enabled      => 'yes',
     protocol     => 'TCP',
-    local_port   => '3389',
+    local_port   => $dbport,
     display_name => 'MSSQL',
     description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
   }
