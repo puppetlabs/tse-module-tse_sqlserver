@@ -38,7 +38,8 @@ class tse_sqlserver::sql (
     direction    => 'in',
     action       => 'Allow',
     enabled      => 'yes',
-    program      => 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\Binn\sqlserver.exe',
+    protocol     => 'TCP',
+    local_port   => '3389',
     display_name => 'MSSQL',
     description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
   }
