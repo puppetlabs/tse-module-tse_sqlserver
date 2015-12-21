@@ -5,9 +5,9 @@ define tse_sqlserver::attachdb (
   $ldf_file      = 'AdventureWorks2012_log.ldf',
   $zip_file      = 'AdventureWorks2012_Data.zip',
   $file_source   = 'puppet:///modules/tse_sqlserver',
-  $db_instance   = 'MYINSTANCE',
-  $owner         = 'CloudShop',
-  $db_password   = 'Azure$123',
+  $dbinstance    = 'MYINSTANCE',
+  $dbuser        = 'CloudShop',
+  $dbpass        = 'Azure$123',
 ) {
   case $::tse_sqlserver::sqlserver_version {
     '2012':  {
@@ -39,9 +39,9 @@ define tse_sqlserver::attachdb (
     onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select suser_sname(owner_sid) from sys.databases where [name] = \'${title}\';\" -ServerInstance \"$::hostname\\${db_instance}\" | where-object \"Column1\" -eq \"${owner}\" | write-error",
     subscribe   => Exec["Attach ${title}"],
   }
-  sqlserver::login{ $owner:
-    instance => $db_instance,
-    password => $db_password,
+  sqlserver::login{ $dbuser:
+    instance => $dbinstance,
+    password => $dbpass,
     notify   => Exec["Attach ${title}"],
     require  => Unzip["SQL Data ${zip_file}"],
   }
