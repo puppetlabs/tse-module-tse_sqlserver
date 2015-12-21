@@ -9,16 +9,7 @@ class tse_sqlserver::sql (
   reboot { 'before install':
       when => pending,
   }
-
-  service { 'wuauserv':
-    ensure => running,
-    enable => true,
-    before => Windowsfeature['Net-Framework-Core'],
-  }
-
-  windowsfeature { 'Net-Framework-Core':
-    before => Sqlserver::Database[$db_name],
-  }
+  dotnet { 'dotnet35-sql': version => '3.5' }
   sqlserver_instance{ $db_instance:
     ensure                => present,
     features              => ['SQL'],
@@ -26,6 +17,7 @@ class tse_sqlserver::sql (
     security_mode         => 'SQL',
     sa_pwd                => $sa_pass,
     sql_sysadmin_accounts => [$admin_user],
+    require               => Dotnet['dotnet35-sql'],
   }
   sqlserver_features { 'Management_Studio':
     source   => $source,
@@ -34,5 +26,15 @@ class tse_sqlserver::sql (
   sqlserver::config{ $db_instance:
     admin_user => 'sa',
     admin_pass => $sa_pass,
+  }
+  windows_firewall::exception { 'Sqlserver Access':
+    ensure       => present,
+    direction    => 'in',
+    action       => 'Allow',
+    enabled      => 'yes',
+    protocol     => 'TCP',
+    local_port   => '1433',
+    display_name => 'MSSQL',
+    description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
   }
 }
