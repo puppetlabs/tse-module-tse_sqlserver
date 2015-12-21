@@ -11,11 +11,11 @@ define tse_sqlserver::attachdb (
 ) {
   case $::tse_sqlserver::sqlserver_version {
     '2012':  {
-      $data_path  = 'C:\Program Files\Microsoft SQL Server\MSSQL11.MYINSTANCE\MSSQL\DATA'
+      $data_path  = "C:\\Program Files\\Microsoft SQL Server\\MSSQL11.${$dbinstance}\\MSSQL\\DATA"
       $sqlps_path = 'C:\Program Files (x86)\Microsoft SQL Server\110\Tools\PowerShell\Modules\SQLPS'
     }
     '2014':  {
-      $data_path  = 'C:\Program Files\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQL\DATA'
+      $data_path  = "C:\\Program Files\\Microsoft SQL Server\\MSSQL12.${dbinstance}\\MSSQL\\DATA"
       $sqlps_path = 'C:\Program Files (x86)\Microsoft SQL Server\120\Tools\PowerShell\Modules\SQLPS'
     }
   }
@@ -31,7 +31,7 @@ define tse_sqlserver::attachdb (
     command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${dbinstance}\'",
     provider    => powershell,
     path        => $sqlps_path,
-    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select [name] from sys.databases where [name] = \'AdventureWorks2012\';\" -ServerInstance \"${::hostname}\\${dbinstance}\"| write-error",
+    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select [name] from sys.databases where [name] = \'${title}\';\" -ServerInstance \"${::hostname}\\${dbinstance}\"| write-error",
   }
   exec { "Change owner of ${title}":
     command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [${title}] ALTER AUTHORIZATION ON DATABASE::${title} TO ${owner};\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${dbinstance}\'",
