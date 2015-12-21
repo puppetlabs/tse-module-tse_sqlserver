@@ -47,13 +47,13 @@ class tse_sqlserver::sql (
   registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpDynamicPorts':
     ensure => present,
     type   => string,
-    data   => '0',
+    data   => $dbport,
   }
 
   registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpPort':
     ensure => present,
     type   => string,
-    data   => $dbport,
+    data   => '',
     notify => Service["MSSQL\$${db_instance}"],
   }
 
