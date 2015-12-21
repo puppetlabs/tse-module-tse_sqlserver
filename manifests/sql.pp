@@ -25,7 +25,7 @@ class tse_sqlserver::sql (
     source                => $source,
     security_mode         => 'SQL',
     sa_pwd                => $sa_pass,
-    sql_sysadmin_accounts => [$admin_user],
+    sql_sysadmin_accounts => [$admin_user, 'NT AUTHORITY\SYSTEM'],
   }
   sqlserver_features { 'Management_Studio':
     source   => $source,
