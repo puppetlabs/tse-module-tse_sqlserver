@@ -19,7 +19,16 @@ class tse_sqlserver::sql (
       when => pending,
   }
 
-  dotnet { 'dotnet35-sql': version => '3.5' }
+  service { 'wuauserv':	
+    ensure => running,		
+    enable => true,		
+    before => Windowsfeature['Net-Framework-Core'],		
+  }		
+		
+  windowsfeature { 'Net-Framework-Core':		
+    before => Sqlserver_instance[$db_instance],		
+  }
+
   sqlserver_instance{ $db_instance:
     ensure                => present,
     features              => ['SQL'],
@@ -27,7 +36,6 @@ class tse_sqlserver::sql (
     security_mode         => 'SQL',
     sa_pwd                => $sa_pass,
     sql_sysadmin_accounts => [$admin_user],
-    require               => Dotnet['dotnet35-sql'],
   }
 
   sqlserver_features { 'Management_Studio':
