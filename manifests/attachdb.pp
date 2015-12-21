@@ -28,11 +28,10 @@ define tse_sqlserver::attachdb (
     subscribe => Staging::File[$zip_file],
   }
   exec { "Attach ${title}":
-    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${dbinstance}\'",
+    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600  -username \'${owner}\' -password \'${dbpass}\' -ServerInstance \'${::hostname}\\${dbinstance}\'",
     provider    => powershell,
     path        => $sqlps_path,
     onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select [name] from sys.databases where [name] = \'${title}\';\" -ServerInstance \"${::hostname}\\${dbinstance}\"| write-error",
-    require     => Sqlserver::Login["${owner}"],
   }
   exec { "Change owner of ${title}":
     command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [${title}] ALTER AUTHORIZATION ON DATABASE::${title} TO ${owner};\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${dbinstance}\'",
