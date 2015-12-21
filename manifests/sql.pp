@@ -45,7 +45,7 @@ class tse_sqlserver::sql (
     direction    => 'in',
     action       => 'Allow',
     enabled      => 'yes',
-    program      => 'C:\Program Files (x86)\Microsoft SQL Server\90\Shared\sqlbrowser.exe'
+    program      => 'C:\Program Files (x86)\Microsoft SQL Server\90\Shared\sqlbrowser.exe',
     display_name => 'MSSQL Browser',
     description  => "MS SQL Server Browser Inbound Access, enabled by Puppet in $module_name",
   }
@@ -55,7 +55,7 @@ class tse_sqlserver::sql (
     direction    => 'in',
     action       => 'Allow',
     enabled      => 'yes',
-    program      => "C:\Program Files\Microsoft SQL Server\${version_var}.${db_instance}\MSSQL\Binn\sqlservr.exe"
+    program      => "C:\Program Files\Microsoft SQL Server\${version_var}.${db_instance}\MSSQL\Binn\sqlservr.exe",
     display_name => 'MSSQL Access',
     description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
   }
