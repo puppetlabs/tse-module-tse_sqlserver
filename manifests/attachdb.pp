@@ -6,7 +6,7 @@ define tse_sqlserver::attachdb (
   $zip_file      = 'AdventureWorks2012_Data.zip',
   $file_source   = 'puppet:///modules/tse_sqlserver',
   $dbinstance    = 'MYINSTANCE',
-  $dbuser        = 'CloudShop',
+  $owner         = 'CloudShop',
   $dbpass        = 'Azure$123',
 ) {
   case $::tse_sqlserver::sqlserver_version {
@@ -28,18 +28,18 @@ define tse_sqlserver::attachdb (
     subscribe => Staging::File[$zip_file],
   }
   exec { "Attach ${title}":
-    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${db_instance}\'",
+    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [master] CREATE DATABASE [${title}] ON (FILENAME = \'${data_path}\\${mdf_file}\'),(FILENAME = \'${data_path}\\${ldf_file}\') for ATTACH\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${dbinstance}\'",
     provider    => powershell,
     path        => $sqlps_path,
-    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select [name] from sys.databases where [name] = \'AdventureWorks2012\';\" -ServerInstance \"${::hostname}\\${db_instance}\"| write-error",
+    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select [name] from sys.databases where [name] = \'AdventureWorks2012\';\" -ServerInstance \"${::hostname}\\${dbinstance}\"| write-error",
   }
   exec { "Change owner of ${title}":
-    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [${title}] ALTER AUTHORIZATION ON DATABASE::${title} TO ${owner};\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${db_instance}\'",
+    command     => "import-module \'${sqlps_path}\'; invoke-sqlcmd \"USE [${title}] ALTER AUTHORIZATION ON DATABASE::${title} TO ${owner};\" -QueryTimeout 3600 -ServerInstance \'${::hostname}\\${dbinstance}\'",
     provider    => powershell,
-    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select suser_sname(owner_sid) from sys.databases where [name] = \'${title}\';\" -ServerInstance \"$::hostname\\${db_instance}\" | where-object \"Column1\" -eq \"${owner}\" | write-error",
+    onlyif      => "import-module \'${sqlps_path}\'; invoke-sqlcmd -Query \"select suser_sname(owner_sid) from sys.databases where [name] = \'${title}\';\" -ServerInstance \"$::hostname\\${dbinstance}\" | where-object \"Column1\" -eq \"${owner}\" | write-error",
     subscribe   => Exec["Attach ${title}"],
   }
-  sqlserver::login{ $dbuser:
+  sqlserver::login{ $owner:
     instance => $dbinstance,
     password => $dbpass,
     notify   => Exec["Attach ${title}"],
