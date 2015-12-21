@@ -1,6 +1,6 @@
 class tse_sqlserver::staging {
   class { '::staging':
-      path  => 'c:\staging',
+      path  => 'C:\ProgramData\staging',
       owner => 'BUILTIN\Administrators',
       group => 'NT AUTHORITY\SYSTEM',
   }
