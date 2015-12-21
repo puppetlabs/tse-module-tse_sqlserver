@@ -13,6 +13,7 @@ class tse_sqlserver::sql (
     '2014':  {
       $version_var  = 'MSSQL12'
     }
+  }
 
   reboot { 'before install':
       when => pending,
