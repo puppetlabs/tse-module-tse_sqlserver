@@ -5,7 +5,7 @@ class tse_sqlserver::sql (
   $admin_user  = 'vagrant',
   $db_instance = 'MYINSTANCE',
   $sa_pass     = 'Password$123$',
-  $dbport      = '49400',
+  $dbport      = '1438',
 ) {
 
   reboot { 'before install':
@@ -38,7 +38,7 @@ class tse_sqlserver::sql (
     direction    => 'in',
     action       => 'Allow',
     enabled      => 'yes',
-    protocol     => 'TCP',
+    protocol     => 'Any',
     local_port   => $dbport,
     display_name => 'MSSQL',
     description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
@@ -47,13 +47,13 @@ class tse_sqlserver::sql (
   registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpDynamicPorts':
     ensure => present,
     type   => string,
-    data   => $dbport,
+    data   => '',
   }
 
   registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12.MYINSTANCE\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpPort':
     ensure => present,
     type   => string,
-    data   => '',
+    data   => $dbport,
     notify => Service["MSSQL\$${db_instance}"],
   }
 
