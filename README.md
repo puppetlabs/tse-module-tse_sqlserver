@@ -62,7 +62,7 @@ tse_sqlserver::attachdb { $dbname:
 
 `tse_sqlserver::sql::source:` The source directory for the sql server installation media. This will either point to the drive where you mounted your installation media via ISO or alternatively an extracted version of the ISO contents into a local directory on the machine. For local directory usage, please ensure mount_iso is set to false.
 
-`tse_sqlserver::sql::admin_user:` Admin windows user account for your sql server install.
+`tse_sqlserver::sql::admin_user:` Admin windows user account for your sql server install. Defaults to vagrant for the demo environment, but may need to be altered to Administrator for other servers.
 
 `tse_sqlserver::sql::db_instance:` Name of the DB instance you would like to install.
 
