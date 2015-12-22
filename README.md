@@ -20,7 +20,7 @@ https://github.com/velocity303/puppet-sqlwebapp
 This module acts as a profile for implementing the PuppetLabs SQL Server module. This is a particular implementation of the SQL Server module that will install the software, SSMS, set up the sa account, create a user, and setup a sample database. The sample database that is imported by default with the attachdb defined type will be for the Sample IIS Web Application linked to above.
 
 ### To setup:
-This module no longer requires hiera to use properly and can be used. There are only a few parameters to pass to the classes if an override is necessary.
+This module no longer requires hiera to use properly and can be used without. There are only a few parameters to pass to the classes if an override is necessary, but the defaults should provide very sane results.
 
 This module can now stage the appropriate files to your windows machine. It currently points to a location in AWS to download the appropriate files. This is recommended before proceeding with including the rest of the code due to the large and slow download process. The mount_iso class will handle this entirely for you to stage SQL Server 2014.
 ```puppet
