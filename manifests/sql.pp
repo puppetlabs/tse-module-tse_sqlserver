@@ -74,7 +74,7 @@ class tse_sqlserver::sql (
     data   => '',
   }
 
-  registry_value { "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\${version_var}.${db_instance}\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpPort":
+  registry_value { "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SQL Server\\${version_var}.${db_instance}\\MSSQLServer\\SuperSocketNetLib\\Tcp\\IPAll\\TcpPort":
     ensure => present,
     type   => string,
     data   => $dbport,
