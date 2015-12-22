@@ -63,12 +63,12 @@ class tse_sqlserver::sql (
     direction    => 'in',
     action       => 'Allow',
     enabled      => 'yes',
-    program      => "C:\Program Files\Microsoft SQL Server\${version_var}.${db_instance}\MSSQL\Binn\sqlservr.exe",
+    program      => "C:\\Program Files\\Microsoft SQL Server\\${version_var}.${db_instance}\\MSSQL\\Binn\\sqlservr.exe",
     display_name => 'MSSQL Access',
     description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
   }
 
-  registry_value { "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\${version_var}.${db_instance}\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\TcpDynamicPorts":
+  registry_value { "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SQL Server\\${version_var}.${db_instance}\\MSSQLServer\\SuperSocketNetLib\\Tcp\\IPAll\\TcpDynamicPorts":
     ensure => present,
     type   => string,
     data   => '',
