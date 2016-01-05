@@ -7,10 +7,8 @@ class tse_sqlserver (
 
   if $mount_iso {
     contain tse_sqlserver::mount
+    Class['tse_sqlserver::mount'] -> Class['tse_sqlserver::sql']
   }
 
   contain tse_sqlserver::sql
-  tse_sqlserver::attachdb { 'AdventureWorks2012':
-    file_source => 'https://s3-us-west-2.amazonaws.com/tseteam/files/tse_sqlserver'
-  }
 }
