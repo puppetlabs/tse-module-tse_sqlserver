@@ -3,6 +3,7 @@
 class tse_sqlserver (
   $sqlserver_version = '2014',
   $mount_iso = True,
+  $admin_user = 'vagrant',
 ) {
 
   if $mount_iso {

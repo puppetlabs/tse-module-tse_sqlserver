@@ -1,8 +1,8 @@
-# Class to install SQL Server, set its configuration, create an
+#Class to install SQL Server, set its configuration, create an
 # instance, as well as a sample DB.
 class tse_sqlserver::sql (
   $source      = 'F:/',
-  $admin_user  = 'vagrant',
+  $admin_user  = $::tse_sqlserver::admin_user,
   $db_instance = 'MYINSTANCE',
   $sa_pass     = 'Password$123$',
 ) {
