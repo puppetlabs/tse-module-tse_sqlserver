@@ -2,7 +2,7 @@
 # instance of the attachDB defined type.
 class tse_sqlserver (
   $sqlserver_version = '2014',
-  $mount_iso = True,
+  $mount_iso = true,
   $admin_user = 'vagrant',
 ) {
 
