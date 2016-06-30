@@ -20,11 +20,11 @@ define tse_sqlserver::attachdb (
     }
   }
   staging::file { $zip_file:
-    source => "${file_source}/${zip_file}",
+    source => "${file_source}\\${zip_file}",
   }
   unzip { "SQL Data ${zip_file}":
-    source    => "${::staging::path}/${module_name}/${zip_file}",
-    creates   => "${data_path}/${mdf_file}",
+    source    => "${::staging::path}\\${module_name}\\${zip_file}",
+    creates   => "${data_path}\\${mdf_file}",
     subscribe => Staging::File[$zip_file],
   }
   exec { "Attach ${title}":
