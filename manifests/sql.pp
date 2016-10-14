@@ -1,7 +1,7 @@
 #Class to install SQL Server, set its configuration, create an
 # instance, as well as a sample DB.
 class tse_sqlserver::sql (
-  $source      = 'F:/',
+  $source      = 'F:\\',
   $admin_user  = $::tse_sqlserver::admin_user,
   $db_instance = 'MYINSTANCE',
   $sa_pass     = 'Password$123$',
@@ -25,9 +25,7 @@ class tse_sqlserver::sql (
     before => Windowsfeature['Net-Framework-Core'],		
   }		
 		
-  windowsfeature { 'Net-Framework-Core':		
-    before => Sqlserver_instance[$db_instance],		
-  }
+  windowsfeature { 'Net-Framework-Core': }
 
   sqlserver_instance{ $db_instance:
     ensure                => present,
@@ -36,11 +34,13 @@ class tse_sqlserver::sql (
     security_mode         => 'SQL',
     sa_pwd                => $sa_pass,
     sql_sysadmin_accounts => [$admin_user],
+    require               => WindowsFeature['Net-Framework-Core'],
   }
 
   sqlserver_features { 'Management_Studio':
     source   => $source,
     features => ['SSMS'],
+    require  => WindowsFeature['Net-Framework-Core'],
   }
 
   sqlserver::config{ $db_instance:
