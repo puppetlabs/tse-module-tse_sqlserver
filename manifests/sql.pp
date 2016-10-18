@@ -26,7 +26,7 @@ class tse_sqlserver::sql (
   }		
 		
   windowsfeature { 'Net-Framework-Core':		
-    before => Sqlserver_instance[$db_instance],		
+    ensure => present,
   }
 
   sqlserver_instance{ $db_instance:
@@ -36,11 +36,13 @@ class tse_sqlserver::sql (
     security_mode         => 'SQL',
     sa_pwd                => $sa_pass,
     sql_sysadmin_accounts => [$admin_user],
+    require               => WindowsFeature['Net-Framework-Core'],
   }
 
   sqlserver_features { 'Management_Studio':
     source   => $source,
     features => ['SSMS'],
+    require  => WindowsFeature['Net-Framework-Core'],
   }
 
   sqlserver::config{ $db_instance:

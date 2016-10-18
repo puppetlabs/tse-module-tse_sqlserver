@@ -23,7 +23,7 @@ define tse_sqlserver::attachdb (
     source => "${file_source}\\${zip_file}",
   }
   unzip { "SQL Data ${zip_file}":
-    source    => "${::staging::path}\\${module_name}\\${zip_file}",
+    source    => "${::staging_windir}\\${module_name}\\${zip_file}",
     creates   => "${data_path}\\${mdf_file}",
     subscribe => Staging::File[$zip_file],
   }
