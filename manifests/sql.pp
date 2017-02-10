@@ -2,7 +2,6 @@
 # instance, as well as a sample DB.
 class tse_sqlserver::sql (
   $source      = 'F:\\',
-  $admin_user  = $::tse_sqlserver::admin_user,
   $db_instance = 'MYINSTANCE',
   $sa_pass     = 'Password$123$',
 ) {
@@ -15,17 +14,26 @@ class tse_sqlserver::sql (
     }
   }
 
+  case $facts['virtual'] {
+    'virtualbox':  {
+      $admin_user  = 'vagrant'
+    }
+    'openstack':  {
+      $admin_user  = 'Administrator'
+    }
+  }
+
   reboot { 'before install':
       when => pending,
   }
 
-  service { 'wuauserv':	
-    ensure => running,		
-    enable => true,		
-    before => Windowsfeature['Net-Framework-Core'],		
-  }		
-		
-  windowsfeature { 'Net-Framework-Core':		
+  service { 'wuauserv':
+    ensure => running,
+    enable => true,
+    before => Windowsfeature['Net-Framework-Core'],
+  }
+
+  windowsfeature { 'Net-Framework-Core':
     ensure => present,
   }
 
@@ -59,7 +67,7 @@ class tse_sqlserver::sql (
     display_name => 'MSSQL Browser',
     description  => "MS SQL Server Browser Inbound Access, enabled by Puppet in $module_name",
   }
-  
+
   windows_firewall::exception { 'Sqlserver access':
     ensure       => present,
     direction    => 'in',
@@ -70,4 +78,4 @@ class tse_sqlserver::sql (
     description  => "MS SQL Server Inbound Access, enabled by Puppet in $module_name",
   }
 
-} 
+}
