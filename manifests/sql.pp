@@ -18,7 +18,7 @@ class tse_sqlserver::sql (
     'virtualbox':  {
       $admin_user  = 'vagrant'
     }
-    'openstack':  {
+    default:  {
       $admin_user  = 'Administrator'
     }
   }
